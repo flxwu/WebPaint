@@ -1,6 +1,6 @@
 var drawing=[];
-var isDrawing=false;
-var mousedownDraw=[];
+var path=[];
+var listItems = [];
 var database;
 
 function setup() {
@@ -18,42 +18,38 @@ function setup() {
   database = firebase.database();
 
   var docCanvas=document.querySelector('#canvas');
-  var canvas = createCanvas(500,500);
+  var canvas = createCanvas(document.body.clientWidth-200, window.innerHeight-250);
+
   canvas.mousePressed(startLine);
   canvas.parent('canvas');
 
 }
 
+const startLine = () => {
+  path = [];
+  drawing.push(path);
+}
+
+function mouseDragged() {
+  var p = {
+    x: mouseX,
+    y: mouseY
+  }
+  path.push(p);
+}
+
 function draw() {
   background(0);
 
-  if(mouseIsPressed) {
-      var point = {
-        x: mouseX,
-        y: mouseY
-      }
-      mousedownDraw.push(point);
-  } else {
-    drawing.push(mousedownDraw);
-    mouseDownDraw=[];
-  }
-
-  beginShape();
 
   stroke(255);
   strokeWeight(4);
   noFill();
-  mousedownDraw.forEach(point => {
-    vertex(point.x,point.y);
-  });
-  drawing.forEach(line =>
-    line.forEach(point => {
+  drawing.forEach(path => {
+    beginShape();
+    path.forEach(point => {
       vertex(point.x,point.y);
-    })
-  );
-  endShape();
-}
-
-const startLine = () => {
-  
+    });
+    endShape();
+  });
 }
