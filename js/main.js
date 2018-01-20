@@ -1,8 +1,10 @@
 var drawing = [];
 var path = [];
 var listItems = [];
+
 var database;
 
+/* p5js functions */
 function setup() {
 
   // Start Firebase
@@ -18,17 +20,11 @@ function setup() {
   database = firebase.database();
 
   var docCanvas = document.querySelector('#canvas');
-  var canvas = createCanvas(document.body.clientWidth - 200, window.innerHeight - 250);
+  var canvas = createCanvas(document.body.clientWidth - 200, window.innerHeight - 200);
 
   canvas.mousePressed(startLine);
   canvas.parent('canvas');
 
-}
-
-const startLine = () => {
-  path = [];
-  // add previous mouseDragged path to doodle
-  drawing.push(path);
 }
 
 function mouseDragged() {
@@ -46,6 +42,7 @@ function draw() {
   stroke(255);
   strokeWeight(4);
   noFill();
+
   // draw current doodle
   drawing.forEach(path => {
     beginShape();
@@ -56,10 +53,29 @@ function draw() {
   });
 }
 
+function windowResized() {
+  resizeCanvas(document.body.clientWidth - 200, window.innerHeight - 200);
+}
+
+/* helper functions */
+
+// onMouseDown
+const startLine = () => {
+  path = [];
+  // add previous mouseDragged path to doodle
+  drawing.push(path);
+}
+
+// button clicks
 const onSaveDoodle = () => {
   pushDoodleToFirebase();
 }
 
+const onClearDoodle = () => {
+    drawing=[];
+}
+
+// push current drawing[] to db
 const pushDoodleToFirebase = () => {
   var dbDrawings = database.ref('drawings');
 
