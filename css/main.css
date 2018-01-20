@@ -1,10 +1,11 @@
 #canvas {
-  padding-left: 100px;
-  padding-top: 50px;
-  padding-bottom: 1rem;
+  padding-top: 1.5rem;
+  padding-bottom: 1.2rem;
+  display: flex;
+  justify-content: center;
 }
 
-html {
+html,body {
     position: relative;
     min-height: 100%;
 }
@@ -13,12 +14,15 @@ footer {
     position: absolute;
     border-top: 1px solid rgba(0,0,0,0.1);
     width: 100%;
+    line-height: 2.1;
     overflow:hidden;
 }
 
 .footer-text {
-  padding: 1em;
-  padding-bottom: 0;
+  padding-top: 1em;
+  padding-left: 1em;
+  padding-right: 1em;
+  margin-bottom: -0.4em;
 }
 
 .left {
@@ -31,4 +35,19 @@ footer {
 
 .socials {
   display: block;
+}
+
+/* bootswatch edits */
+.btn-outline-info {
+  position: absolute;
+  right: 0;
+  overflow: hidden;
+  margin-right: 28em;
+}
+
+.btn-outline-warning {
+  position: absolute;
+  right: 0;
+  overflow: hidden;
+  margin-right: 8em;
 }
