@@ -11,13 +11,24 @@
 
         gtag('config', 'UA-109087116-2');
     </script>
+    <!--  ask for notifications permission on page load -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        if (!Notification) {
+          alert('Desktop notifications not available in your browser. Try Chromium.');
+          return;
+        }
 
+        if (Notification.permission !== "granted")
+          Notification.requestPermission();
+      });
+    </script>
 
     <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.16/p5.js"></script>
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/main.js" type="text/javascript"></script>
-    
+
     <script>
     $(function(){
       $("#footer").load("_includes/footer.html");
