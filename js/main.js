@@ -14,7 +14,8 @@ const USER_MSG = {
   DOWNLOAD_SUCCESS: 'Doodle downloaded successfully',
   DOWNLOAD_SUCCESS_SUB: 'Saved as: ',
   DOWNLOAD_ERROR: 'Doodle download failed',
-  CANVAS_EMPTY: 'Canvas is empty'
+  CANVAS_EMPTY: 'Canvas is empty',
+  CANVAS_CLEARED: 'Canvas cleared successfully'
 }
 
 /*
@@ -90,6 +91,7 @@ const onSaveDoodle = () => {
 
 const onClearDoodle = () => {
   drawing = [];
+  notify(USER_MSG.CANVAS_CLEARED,'');
 }
 
 const onDownloadDoodle = () => {
@@ -146,7 +148,7 @@ const notify = (title, msg) => {
     });
 
     notification.onclick = function() {
-      window.open("http://stackoverflow.com/a/13328397/1269037");
+      // window.open("http://stackoverflow.com/a/13328397/1269037");
     };
 
   }
