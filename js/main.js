@@ -1,4 +1,5 @@
 var drawing = [];
+var tmpDrawing = [];
 var path = [];
 var listItems = [];
 
@@ -6,11 +7,13 @@ var database;
 
 var doodleKey = '';
 
+
 const USER_MSG = {
   UPLOAD_SUCCESS: 'Doodle saved successfully',
   UPLOAD_SUCCESS_SUB: 'Your Doodle has been successfully uploaded to the WebPaint database! Key: ',
   UPLOAD_ERROR: '[ERROR] Could not save Doodle',
   UPLOAD_ERROR_SUB: 'Uploading your Doodle has failed due to this',
+  UPLOAD_ERROR_DUPLICATE: 'You cannot save the exact same doodle twice',
   DOWNLOAD_SUCCESS: 'Doodle downloaded successfully',
   DOWNLOAD_SUCCESS_SUB: 'Saved as: ',
   DOWNLOAD_ERROR: 'Doodle download failed',
@@ -86,7 +89,11 @@ const startLine = () => {
 
 /* button clicks */
 const onSaveDoodle = () => {
-  pushDoodleToFirebase();
+  if(drawing.length==tmpdrawing.length && drawing.every((v,i)=> v === tmpdrawing[i])) {
+    notify(USER_MSG.UPLOAD_ERROR,USER_MSG.UPLOAD_ERROR_DUPLICATE);
+  } else {
+    pushDoodleToFirebase();
+  }
 }
 
 const onClearDoodle = () => {
@@ -133,6 +140,7 @@ const pushDoodleToFirebase = () => {
     } else {
       console.log(USER_MSG.UPLOAD_SUCCESS);
       notify(USER_MSG.UPLOAD_SUCCESS, USER_MSG.UPLOAD_SUCCESS_SUB + String(doodleKey));
+      tmpDrawing=drawing;
     }
   }
 }
@@ -148,7 +156,7 @@ const notify = (title, msg) => {
     });
 
     notification.onclick = function() {
-      // window.open("http://stackoverflow.com/a/13328397/1269037");
+      window.open("https://webpaint.david-wu.me/");
     };
 
   }
