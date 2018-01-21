@@ -42,6 +42,13 @@ footer {
   position: absolute;
   right: 0;
   overflow: hidden;
+  margin-right: 40em;
+}
+
+.btn-outline-success {
+  position: absolute;
+  right: 0;
+  overflow: hidden;
   margin-right: 28em;
 }
 
