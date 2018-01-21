@@ -89,7 +89,7 @@ const startLine = () => {
 
 /* button clicks */
 const onSaveDoodle = () => {
-  if(drawing.length==tmpdrawing.length && drawing.every((v,i)=> v === tmpdrawing[i])) {
+  if(drawing.length==tmpDrawing.length && drawing.every((v,i)=> v === tmpDrawing[i])) {
     notify(USER_MSG.UPLOAD_ERROR,USER_MSG.UPLOAD_ERROR_DUPLICATE);
   } else {
     pushDoodleToFirebase();
