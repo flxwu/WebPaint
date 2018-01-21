@@ -6,11 +6,25 @@ var database;
 
 var doodleKey = '';
 
-/* p5js functions */
+const USER_MSG = {
+  UPLOAD_SUCCESS: 'Doodle saved successfully',
+  UPLOAD_SUCCESS_SUB: 'Your Doodle has been successfully uploaded to the WebPaint database! Key: ',
+  UPLOAD_ERROR: '[ERROR] Could not save Doodle',
+  UPLOAD_ERROR_SUB: 'Uploading your Doodle has failed due to this',
+  DOWNLOAD_SUCCESS: 'Doodle downloaded successfully',
+  DOWNLOAD_SUCCESS_SUB: 'Saved as: ',
+  DOWNLOAD_ERROR: 'Doodle download failed',
+  CANVAS_EMPTY: 'Canvas is empty'
+}
+
+/*
+  P5.JS Functions
+*/
+
 function setup() {
 
   // Start Firebase
-  var config = {
+  let config = {
     apiKey: "AIzaSyDSspuE2xGloHo-mEtLKRLbYGU8VkssNPk",
     authDomain: "webpaint-p5js.firebaseapp.com",
     databaseURL: "https://webpaint-p5js.firebaseio.com",
@@ -21,15 +35,15 @@ function setup() {
   firebase.initializeApp(config);
   database = firebase.database();
 
-  var docCanvas = document.querySelector('#canvas');
-  var canvas = createCanvas(document.body.clientWidth - 200, window.innerHeight - 200);
+  let docCanvas = document.querySelector('#canvas');
+  let canvas = createCanvas(document.body.clientWidth - 200, window.innerHeight - 200);
 
   canvas.mousePressed(startLine);
   canvas.parent('canvas');
 }
 
 function mouseDragged() {
-  var p = {
+  let p = {
     x: mouseX,
     y: mouseY
   }
@@ -58,7 +72,9 @@ function windowResized() {
   resizeCanvas(document.body.clientWidth - 200, window.innerHeight - 200);
 }
 
-/* helper functions */
+/*
+  Helper Functions
+*/
 
 // onMouseDown
 const startLine = () => {
@@ -67,33 +83,42 @@ const startLine = () => {
   drawing.push(path);
 }
 
-// button clicks
+/* button clicks */
 const onSaveDoodle = () => {
-    pushDoodleToFirebase();
+  pushDoodleToFirebase();
 }
 
 const onClearDoodle = () => {
-    drawing=[];
+  drawing = [];
 }
 
 const onDownloadDoodle = () => {
-    if(drawing.length==0) {
-
+  if (drawing.length == 0) {
+    notify(USER_MSG.DOWNLOAD_ERROR, USER_MSG.CANVAS_EMPTY);
+  } else {
+    if (doodleKey == '') {
+      let currTime = String(new Date(new Date().getTime()).toISOString().split('.')[0]);
+      let fileName = "WebPaint_" + currTime;
+      saveCanvas(fileName, "jpg");
+      notify(USER_MSG.DOWNLOAD_SUCCESS, USER_MSG.DOWNLOAD_SUCCESS_SUB + fileName);
     } else {
-      saveCanvas("WebPaint_"+String(doodleKey),"jpg");
+      let fileName = "WebPaint_" + String(doodleKey);
+      saveCanvas(fileName, "jpg");
+      notify(USER_MSG.DOWNLOAD_SUCCESS, USER_MSG.DOWNLOAD_SUCCESS_SUB + fileName);
     }
+  }
 }
 
 // push current drawing[] to db
 const pushDoodleToFirebase = () => {
-  var dbDrawings = database.ref('drawings');
+  let dbDrawings = database.ref('drawings');
 
   // data to be stored in DB
-  var data = {
-    doodle : drawing
+  let data = {
+    doodle: drawing
   };
 
-  var dbDoodle = dbDrawings.push(data, finished);
+  let dbDoodle = dbDrawings.push(data, finished);
   console.log("Firebase generated key: " + dbDoodle.key);
   doodleKey = dbDoodle.key;
 
@@ -102,8 +127,28 @@ const pushDoodleToFirebase = () => {
     if (err) {
       console.log("ooops, something went wrong.");
       console.log(err);
+      notify(USER_MSG.UPLOAD_ERROR, USER_MSG.UPLOAD_ERROR_SUB);
     } else {
-      console.log('Data saved successfully');
+      console.log(USER_MSG.UPLOAD_SUCCESS);
+      notify(USER_MSG.UPLOAD_SUCCESS, USER_MSG.UPLOAD_SUCCESS_SUB + String(doodleKey));
     }
   }
+}
+
+// Notifications
+const notify = (title, msg) => {
+  if (Notification.permission !== "granted") {
+    Notification.requestPermission();
+  } else {
+    let notification = new Notification(title, {
+      icon: 'favicon.ico',
+      body: msg,
+    });
+
+    notification.onclick = function() {
+      window.open("http://stackoverflow.com/a/13328397/1269037");
+    };
+
+  }
+
 }
