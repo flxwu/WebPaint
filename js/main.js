@@ -4,6 +4,8 @@ var listItems = [];
 
 var database;
 
+var doodleKey = '';
+
 /* p5js functions */
 function setup() {
 
@@ -24,7 +26,6 @@ function setup() {
 
   canvas.mousePressed(startLine);
   canvas.parent('canvas');
-
 }
 
 function mouseDragged() {
@@ -68,11 +69,19 @@ const startLine = () => {
 
 // button clicks
 const onSaveDoodle = () => {
-  pushDoodleToFirebase();
+    pushDoodleToFirebase();
 }
 
 const onClearDoodle = () => {
     drawing=[];
+}
+
+const onDownloadDoodle = () => {
+    if(drawing.length==0) {
+
+    } else {
+      saveCanvas("WebPaint_"+String(doodleKey),"jpg");
+    }
 }
 
 // push current drawing[] to db
@@ -86,6 +95,7 @@ const pushDoodleToFirebase = () => {
 
   var dbDoodle = dbDrawings.push(data, finished);
   console.log("Firebase generated key: " + dbDoodle.key);
+  doodleKey = dbDoodle.key;
 
   // Reload the data for the page
   function finished(err) {
