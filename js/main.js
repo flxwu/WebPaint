@@ -11,12 +11,12 @@ var doodleKey = '';
 const USER_MSG = {
   UPLOAD_SUCCESS: 'Doodle saved successfully',
   UPLOAD_SUCCESS_SUB: 'Your Doodle has been successfully uploaded to the WebPaint database! Key: ',
-  UPLOAD_ERROR: '[ERROR] Could not save Doodle',
+  UPLOAD_ERROR: '[ERROR] Doodle saving failed',
   UPLOAD_ERROR_SUB: 'Uploading your Doodle has failed due to this',
   UPLOAD_ERROR_DUPLICATE: 'You cannot save the exact same doodle twice',
   DOWNLOAD_SUCCESS: 'Doodle downloaded successfully',
   DOWNLOAD_SUCCESS_SUB: 'Saved as: ',
-  DOWNLOAD_ERROR: 'Doodle download failed',
+  DOWNLOAD_ERROR: '[ERROR] Doodle download failed',
   CANVAS_EMPTY: 'Canvas is empty',
   CANVAS_CLEARED: 'Canvas cleared successfully'
 }
