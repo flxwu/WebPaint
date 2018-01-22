@@ -69,7 +69,7 @@ footer {
 /* Load Doodle dialog box */
 dialog {
   display: none;
-  position: relative;
+  position: absolute;
   z-index:1002;
 
 }

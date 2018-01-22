@@ -7,10 +7,6 @@ var database;
 
 var doodleKey = '';
 
-var dialog = document.querySelector('dialog'),
-  closebutton = document.getElementById('close-dialog'),
-  pagebackground = document.querySelector('body');
-
 const USER_MSG = {
   UPLOAD_SUCCESS: 'Doodle saved successfully',
   UPLOAD_SUCCESS_SUB: 'Your Doodle has been successfully uploaded to the WebPaint database! Key: ',
@@ -100,16 +96,21 @@ const onSaveDoodle = () => {
 }
 
 const onLoadDoodle = () => {
-  if (!dialog.hasAttribute('open')) {
-    // show the dialog 
-    dialog.setAttribute('open', 'open');
-    // after displaying the dialog, focus the closebutton inside it
-    closebutton.focus();
-    closebutton.addEventListener('click', onLoadDoodle);
-  } else {
-    dialog.removeAttribute('open');
-    var div = document.querySelector('#backdrop');
-  }
+  notify("[ERROR] Not implemented yet","Sorry for the inconvenience");
+  // var dialog = document.querySelector('dialog'),
+  //   closebutton = document.getElementById('close-dialog'),
+  //   pagebackground = document.querySelector('body');
+
+  // if (!dialog.hasAttribute('open')) {
+  //   // show the dialog 
+  //   dialog.setAttribute('open', 'open');
+  //   // after displaying the dialog, focus the closebutton inside it
+  //   closebutton.focus();
+  //   closebutton.addEventListener('click', onLoadDoodle);
+  // } else {
+  //   dialog.removeAttribute('open');
+  //   var div = document.querySelector('#backdrop');
+  // }
 }
 
 const onClearDoodle = () => {
