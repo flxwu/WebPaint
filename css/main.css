@@ -38,40 +38,43 @@ footer {
 }
 
 /* bootswatch button edits */
-.btn-outline-info {
+
+.btn {
   position: absolute;
   right: 0;
   overflow: hidden;
-  margin-right: 40rem;
+  padding: 0.6rem 1rem;
+}
+
+.btn-outline-info {
+  margin-right: 35.9rem;
 }
 
 .btn-outline-success {
-  position: absolute;
-  right: 0;
-  overflow: hidden;
-  margin-right: 30rem;
+  margin-right: 28rem;
 }
 
 .btn-outline-warning {
-  position: absolute;
-  right: 0;
-  overflow: hidden;
   margin-right: 20rem;
 }
 
 .btn-outline-danger {
-  position: absolute;
-  right: 0;
-  overflow: hidden;
   margin-right: 6.5rem;
 }
+
+.btn-secondary {
+  float: right;
+  padding: 0.3rem 0.5rem;
+  margin-right: 1rem;
+}
+
 
 /* Load Doodle dialog box */
 dialog {
   display: none;
   position: absolute;
   z-index:1002;
-
+  border-radius: 1rem;
 }
 
 dialog[open="open"] {
@@ -80,6 +83,7 @@ dialog[open="open"] {
 
 @media (min-width: 30em) { 
   dialog {
-    width: 20em; 
+    width: 40rem;
+    margin-top: 10rem;
   }
 }
