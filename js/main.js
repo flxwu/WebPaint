@@ -7,6 +7,9 @@ var database;
 
 var doodleKey = '';
 
+var dialog = document.querySelector('dialog'),
+  closebutton = document.getElementById('close-dialog'),
+  pagebackground = document.querySelector('body');
 
 const USER_MSG = {
   UPLOAD_SUCCESS: 'Doodle saved successfully',
@@ -89,16 +92,29 @@ const startLine = () => {
 
 /* button clicks */
 const onSaveDoodle = () => {
-  if(drawing.length==tmpDrawing.length && drawing.every((v,i)=> v === tmpDrawing[i])) {
-    notify(USER_MSG.UPLOAD_ERROR,USER_MSG.UPLOAD_ERROR_DUPLICATE);
+  if (drawing.length == tmpDrawing.length && drawing.every((v, i) => v === tmpDrawing[i])) {
+    notify(USER_MSG.UPLOAD_ERROR, USER_MSG.UPLOAD_ERROR_DUPLICATE);
   } else {
     pushDoodleToFirebase();
   }
 }
 
+const onLoadDoodle = () => {
+  if (!dialog.hasAttribute('open')) {
+    // show the dialog 
+    dialog.setAttribute('open', 'open');
+    // after displaying the dialog, focus the closebutton inside it
+    closebutton.focus();
+    closebutton.addEventListener('click', onLoadDoodle);
+  } else {
+    dialog.removeAttribute('open');
+    var div = document.querySelector('#backdrop');
+  }
+}
+
 const onClearDoodle = () => {
   drawing = [];
-  notify(USER_MSG.CANVAS_CLEARED,'');
+  notify(USER_MSG.CANVAS_CLEARED, '');
 }
 
 const onDownloadDoodle = () => {
@@ -140,7 +156,7 @@ const pushDoodleToFirebase = () => {
     } else {
       console.log(USER_MSG.UPLOAD_SUCCESS);
       notify(USER_MSG.UPLOAD_SUCCESS, USER_MSG.UPLOAD_SUCCESS_SUB + String(doodleKey));
-      tmpDrawing=drawing;
+      tmpDrawing = drawing;
     }
   }
 }
@@ -155,7 +171,7 @@ const notify = (title, msg) => {
       body: msg,
     });
 
-    notification.onclick = function() {
+    notification.onclick = function () {
       window.open("https://webpaint.david-wu.me/");
     };
 
