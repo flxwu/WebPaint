@@ -3,6 +3,10 @@ var tmpDrawing = [];
 var path = [];
 var listItems = [];
 
+var doodlesDict = {
+
+};
+
 var database;
 
 var doodleKey = '';
@@ -17,7 +21,9 @@ const USER_MSG = {
   DOWNLOAD_SUCCESS_SUB: 'Saved as: ',
   DOWNLOAD_ERROR: '[ERROR] Doodle download failed',
   CANVAS_EMPTY: 'Canvas is empty',
-  CANVAS_CLEARED: 'Canvas cleared successfully'
+  CANVAS_CLEARED: 'Canvas cleared successfully',
+  LOAD_SUCCESS: 'Doodles loaded successfully',
+  LOAD_SUCCESS_SUB: 'Saved Doodles have been successfully fetched and loaded from WebPaint database!'
 }
 
 /*
@@ -97,7 +103,7 @@ const onSaveDoodle = () => {
 
 const onLoadDoodle = () => {
   var dialog = document.querySelector('dialog'),
-    closebutton = document.getElementById('close-dialog'),
+    closebutton = document.querySelector('#close-dialog'),
     pagebackground = document.querySelector('body');
 
   if (!dialog.hasAttribute('open')) {
@@ -106,10 +112,13 @@ const onLoadDoodle = () => {
     // after displaying the dialog, focus the closebutton inside it
     closebutton.focus();
     closebutton.addEventListener('click', onLoadDoodle);
+
+    fetchDoodles();
   } else {
     dialog.removeAttribute('open');
     var div = document.querySelector('#backdrop');
   }
+
 }
 
 const onClearDoodle = () => {
@@ -177,4 +186,60 @@ const notify = (title, msg) => {
 
   }
 
+}
+
+// load doodles from DB into list
+const fetchDoodles = () => {
+  console.log('Loading from db');
+  getAllDoodles();
+  showLoadedDoodles();
+}
+
+const getAllDoodles = () => {
+  let ref = database.ref("drawings");
+  ref.on("value", gotAll, errData);
+  // The data comes back as an object
+
+  function gotAll(data) {
+    let drawings = data.val();
+    // Grab all the keys to iterate over the object
+    let keys = Object.keys(drawings);
+    clearList();
+    for (let i = 0; i < keys.length; i++) {
+      let oneDoodle = loadOne(keys[i]);
+      console.log(oneDoodle);
+      doodlesDict.push({
+        key: keys[i],
+        value: oneDoodle
+      });
+    }
+  }
+
+  function errData(error) {
+    console.log("Something went wrong.");
+    console.log(error);
+  }
+}
+
+const loadOne = (id) => {
+  let ref = database.ref("drawings/" + id + "/doodle");
+  ref.on("value", gotOne, errData);
+
+  function errData(error) {
+    console.log("Something went wrong.");
+    console.log(error);
+  }
+
+  function gotOne(data) {
+    return data.val();
+  }
+}
+
+const showLoadedDoodles = () => {
+  var doodleTable = document.querySelector('table');
+  for (const [key, value] of Object.entries(doodlesDict)) {
+    var row = doodleTable.insertRow(-1);
+    var cell = row.insertCell(0);
+    cell.innerHTML = String(key);
+  }
 }
