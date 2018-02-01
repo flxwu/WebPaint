@@ -3,9 +3,7 @@ var tmpDrawing = [];
 var path = [];
 var listItems = [];
 
-var doodlesDict = {
-
-};
+var doodlesDict = [];
 
 var database;
 
