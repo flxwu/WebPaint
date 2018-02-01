@@ -204,7 +204,6 @@ const getAllDoodles = () => {
     let drawings = data.val();
     // Grab all the keys to iterate over the object
     let keys = Object.keys(drawings);
-    clearList();
     for (let i = 0; i < keys.length; i++) {
       let oneDoodle = loadOne(keys[i]);
       console.log(oneDoodle);
