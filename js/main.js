@@ -201,10 +201,11 @@ const getAllDoodles = () => {
   function gotAll(data) {
     let drawings = data.val();
     // Grab all the keys to iterate over the object
+    doodlesDict = [];
     let keys = Object.keys(drawings);
     for (let i = 0; i < keys.length; i++) {
       let oneDoodle = loadOne(keys[i]);
-      console.log(oneDoodle);
+      console.log('Loaded one: ' + String(oneDoodle));
       doodlesDict.push({
         key: keys[i],
         value: oneDoodle
@@ -228,15 +229,18 @@ const loadOne = (id) => {
   }
 
   function gotOne(data) {
-    return data.val();
+    return data.val().path;
   }
 }
 
 const showLoadedDoodles = () => {
   var doodleTable = document.querySelector('table');
-  for (const [key, value] of Object.entries(doodlesDict)) {
+  doodleTable.innerHTML = '';
+  Object.entries(doodlesDict).forEach(doodleEntry => {
     var row = doodleTable.insertRow(-1);
-    var cell = row.insertCell(0);
-    cell.innerHTML = String(key);
-  }
+    var cell_ID = row.insertCell(0);
+    var cell_Key = row.insertCell(1);
+    cell_ID.innerHTML = doodleEntry[0];
+    cell_Key.innerHTML = doodleEntry[1].key;
+  });
 }
