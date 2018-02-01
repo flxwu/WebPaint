@@ -234,7 +234,7 @@ const loadOne = (id) => {
 }
 
 const showLoadedDoodles = () => {
-  var doodleTable = document.querySelector('table');
+  var doodleTable = document.querySelector('table').getElementsByTagName('tbody')[0];
   doodleTable.innerHTML = '';
   Object.entries(doodlesDict).forEach(doodleEntry => {
     var row = doodleTable.insertRow(-1);
