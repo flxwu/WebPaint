@@ -90,6 +90,13 @@ dialog[open="open"] {
 
 table {
   border: 3px solid black;
+  width: 100%;
+  max-height: 50px;
+}
+
+tbody {
+  height:10rem;
+  overflow:auto;
 }
 
 th, td {
