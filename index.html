@@ -43,9 +43,13 @@
     $(function () {
       $("#loaddialog").load("_includes/dialogbox_doodleload.html");
     });
+    $('.btn-outline-warning').click(function () {
+      $(this).addClass("slideUp");
+    });
   </script>
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/animations.css">
   <link href="favicon.ico" rel="shortcut icon" />
   <title>WebPaint</title>
 </head>
@@ -54,7 +58,7 @@
   <nav id="navbar" class="navbar navbar-expand-lg navbar-light bg-light">
   </nav>
 
-  <dialog id="loaddialog" role="dialog" aria-labelledby="dialog-heading">
+  <dialog id="loaddialog" role="dialog" aria-labelledby="dialog-heading" class="slideDown">
   </dialog>
 
   <div id="canvas"></div>
