@@ -9,7 +9,7 @@ var database;
 
 var doodleKey = '';
 
-var dialog;
+var loaddialog;
 
 const USER_MSG = {
   UPLOAD_SUCCESS: 'Doodle saved successfully',
@@ -52,8 +52,8 @@ function setup() {
 }
 
 function mouseDragged() {
-  if(dialog!=null) {
-    if(!dialog.hasAttribute('open')) {
+  if (loaddialog != null) {
+    if (!loaddialog.hasAttribute('open')) {
       let p = {
         x: mouseX,
         y: mouseY
@@ -112,30 +112,31 @@ const onSaveDoodle = () => {
 }
 
 const onLoadDoodle = () => {
-  dialog = document.querySelector('dialog');
+  loaddialog = document.querySelector('#loaddialog');
   var closebutton = document.querySelector('#close-dialog'),
     pagebackground = document.querySelector('body');
 
-  if (!dialog.hasAttribute('open')) {
+  if (!loaddialog.hasAttribute('open')) {
     // get doodles from db
     fetchDoodles();
     // show the dialog 
-    dialog.setAttribute('open', 'open');
+    loaddialog.setAttribute('open', 'open');
     // after displaying the dialog, focus the closebutton inside it
     closebutton.focus();
     closebutton.addEventListener('click', onLoadDoodle);
   } else {
-    dialog.removeAttribute('open');
-    var div = document.querySelector('#backdrop');
+    loaddialog.removeAttribute('open');
   }
 
 }
 
+// clear drawing array -> clear canvas
 const onClearDoodle = () => {
   drawing = [];
   notify(USER_MSG.CANVAS_CLEARED, '');
 }
 
+// download current canvas to local
 const onDownloadDoodle = () => {
   if (drawing.length == 0) {
     notify(USER_MSG.DOWNLOAD_ERROR, USER_MSG.CANVAS_EMPTY);
@@ -205,6 +206,7 @@ const fetchDoodles = () => {
   showLoadedDoodles();
 }
 
+// get all doodle IDs and add them to doodlesDict
 const getAllDoodles = () => {
   let ref = database.ref("drawings");
   ref.on("value", gotAll, errData);
@@ -216,11 +218,11 @@ const getAllDoodles = () => {
     doodlesDict = [];
     let keys = Object.keys(drawings);
     for (let i = 0; i < keys.length; i++) {
-      let oneDoodle = loadOne(keys[i]);
-      console.log('Loaded one: ' + String(oneDoodle));
+      // let oneDoodle = loadOne(keys[i]);
+      // console.log(oneDoodle);
       doodlesDict.push({
         key: keys[i],
-        value: oneDoodle
+        // value: oneDoodle
       });
     }
   }
@@ -232,7 +234,7 @@ const getAllDoodles = () => {
 }
 
 const loadOne = (id) => {
-  let ref = database.ref("drawings/" + id + "/doodle");
+  let ref = database.ref("drawings/" + id);
   ref.on("value", gotOne, errData);
 
   function errData(error) {
@@ -241,18 +243,28 @@ const loadOne = (id) => {
   }
 
   function gotOne(data) {
-    return data.val().path;
+    drawing = data.val().doodle;
   }
 }
 
 const showLoadedDoodles = () => {
-  var doodleTable = document.querySelector('table').getElementsByTagName('tbody')[0];
+  let doodleTable = document.querySelector('table').getElementsByTagName('tbody')[0];
   doodleTable.innerHTML = '';
   Object.entries(doodlesDict).forEach(doodleEntry => {
-    var row = doodleTable.insertRow(-1);
-    var cell_ID = row.insertCell(0);
-    var cell_Key = row.insertCell(1);
+    let row = doodleTable.insertRow(-1);
+    let cell_ID = row.insertCell(0);
+    let cell_Key = row.insertCell(1);
     cell_ID.innerHTML = doodleEntry[0];
     cell_Key.innerHTML = doodleEntry[1].key;
+    let createClickHandler =
+      function (row) {
+        return function () {
+          let IDcell = row.getElementsByTagName("td")[1];
+          let doodleID = IDcell.innerHTML;
+          loadOne(doodleID);
+          loaddialog.removeAttribute('open');
+        };
+      };
+    row.onclick = createClickHandler(row);
   });
 }
