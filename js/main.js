@@ -9,6 +9,8 @@ var database;
 
 var doodleKey = '';
 
+var dialog;
+
 const USER_MSG = {
   UPLOAD_SUCCESS: 'Doodle saved successfully',
   UPLOAD_SUCCESS_SUB: 'Your Doodle has been successfully uploaded to the WebPaint database! Key: ',
@@ -50,12 +52,23 @@ function setup() {
 }
 
 function mouseDragged() {
-  let p = {
-    x: mouseX,
-    y: mouseY
+  if(dialog!=null) {
+    if(!dialog.hasAttribute('open')) {
+      let p = {
+        x: mouseX,
+        y: mouseY
+      }
+      // push to mouseDragged path
+      path.push(p);
+    }
+  } else {
+    let p = {
+      x: mouseX,
+      y: mouseY
+    }
+    // push to mouseDragged path
+    path.push(p);
   }
-  // push to mouseDragged path
-  path.push(p);
 }
 
 function draw() {
@@ -64,7 +77,6 @@ function draw() {
   stroke(255);
   strokeWeight(4);
   noFill();
-
   // draw current doodle
   drawing.forEach(path => {
     beginShape();
@@ -100,18 +112,18 @@ const onSaveDoodle = () => {
 }
 
 const onLoadDoodle = () => {
-  var dialog = document.querySelector('dialog'),
-    closebutton = document.querySelector('#close-dialog'),
+  dialog = document.querySelector('dialog');
+  var closebutton = document.querySelector('#close-dialog'),
     pagebackground = document.querySelector('body');
 
   if (!dialog.hasAttribute('open')) {
+    // get doodles from db
+    fetchDoodles();
     // show the dialog 
     dialog.setAttribute('open', 'open');
     // after displaying the dialog, focus the closebutton inside it
     closebutton.focus();
     closebutton.addEventListener('click', onLoadDoodle);
-
-    fetchDoodles();
   } else {
     dialog.removeAttribute('open');
     var div = document.querySelector('#backdrop');
