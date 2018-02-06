@@ -3,6 +3,15 @@
 
 Webpaint is an drawing Web App where you can save your drawings for opening them up later!.
 
+### Used technologies:
+
+- A lot of Vanilla JS, [EcmaScript 6](https://www.ecma-international.org/ecma-262/6.0/index.html) and a little bit of [jQuery](https://jquery.com/)
+- The [JavaScript Processing Framework](https://p5js.org) (p5.js) for drawing
+- [Twitter Bootstrap](https://getbootstrap.com/) as CSS framework
+- [Font Awesome](https://fontawesome.com/) for the social icons
+- [Firebase Realtime Database](https://firebase.google.com/docs/database/) for data storage i.e. saving the doodles
+- [Firebase Hosting](https://firebase.google.com/docs/hosting/) for deployment
+
 ## Current Features
 
 - Doodle Download (jpg)
