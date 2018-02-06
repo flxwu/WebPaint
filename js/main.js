@@ -1,19 +1,20 @@
-var drawing = [];
-var tmpDrawing = [];
-var path = [];
-var listItems = [];
+let drawing = [];
+let tmpDrawing = [];
+let path = [];
 
-var doodlesDict = [];
+let doodlesDict = [];
 
-var database;
+let database;
+let loadedDoodleEdited = false;
 
-var doodleKey = '';
+let doodleKey = '';
 
-var loaddialog;
+let loaddialog;
 
-const USER_MSG = {
+let USER_MSG = {
   UPLOAD_SUCCESS: 'Doodle saved successfully',
-  UPLOAD_SUCCESS_SUB: 'Your Doodle has been successfully uploaded to the WebPaint database! Key: ',
+  UPLOAD_SUCCESS_SUB: 'Your Doodle has been successfully ' +
+    'uploaded to the WebPaint database! Key: ',
   UPLOAD_ERROR: '[ERROR] Doodle saving failed',
   UPLOAD_ERROR_SUB: 'Uploading your Doodle has failed due to this',
   UPLOAD_ERROR_DUPLICATE: 'You cannot save the exact same doodle twice',
@@ -23,29 +24,32 @@ const USER_MSG = {
   CANVAS_EMPTY: 'Canvas is empty',
   CANVAS_CLEARED: 'Canvas cleared successfully',
   LOAD_SUCCESS: 'Doodles loaded successfully',
-  LOAD_SUCCESS_SUB: 'Saved Doodles have been successfully fetched and loaded from WebPaint database!'
-}
+  LOAD_SUCCESS_SUB: 'Saved Doodles have been successfully ' +
+    'fetched and loaded from WebPaint database!',
+};
 
 /*
   P5.JS Functions
 */
 
+/**
+ * Setup Database and create canvas
+ */
 function setup() {
-
   // Start Firebase
   let config = {
-    apiKey: "AIzaSyDSspuE2xGloHo-mEtLKRLbYGU8VkssNPk",
-    authDomain: "webpaint-p5js.firebaseapp.com",
-    databaseURL: "https://webpaint-p5js.firebaseio.com",
-    projectId: "webpaint-p5js",
-    storageBucket: "",
-    messagingSenderId: "177158416431"
+    apiKey: 'AIzaSyDSspuE2xGloHo-mEtLKRLbYGU8VkssNPk',
+    authDomain: 'webpaint-p5js.firebaseapp.com',
+    databaseURL: 'https://webpaint-p5js.firebaseio.com',
+    projectId: 'webpaint-p5js',
+    storageBucket: '',
+    messagingSenderId: '177158416431',
   };
   firebase.initializeApp(config);
   database = firebase.database();
 
-  let docCanvas = document.querySelector('#canvas');
-  let canvas = createCanvas(document.body.clientWidth - 200, window.innerHeight - 200);
+  let canvas = createCanvas(document.body.clientWidth - 200,
+    window.innerHeight - 200);
 
   canvas.mousePressed(startLine);
   canvas.parent('canvas');
@@ -56,18 +60,20 @@ function mouseDragged() {
     if (!loaddialog.hasAttribute('open')) {
       let p = {
         x: mouseX,
-        y: mouseY
-      }
+        y: mouseY,
+      };
       // push to mouseDragged path
       path.push(p);
+      loadedDoodleEdited = true;
     }
   } else {
     let p = {
       x: mouseX,
-      y: mouseY
-    }
+      y: mouseY,
+    };
     // push to mouseDragged path
     path.push(p);
+    loadedDoodleEdited = true;
   }
 }
 
@@ -78,9 +84,9 @@ function draw() {
   strokeWeight(4);
   noFill();
   // draw current doodle
-  drawing.forEach(path => {
+  drawing.forEach((path) => {
     beginShape();
-    path.forEach(point => {
+    path.forEach((point) => {
       vertex(point.x, point.y);
     });
     endShape();
@@ -100,26 +106,26 @@ const startLine = () => {
   path = [];
   // add previous mouseDragged path to doodle
   drawing.push(path);
-}
+};
 
 /* button clicks */
 const onSaveDoodle = () => {
-  if (drawing.length == tmpDrawing.length && drawing.every((v, i) => v === tmpDrawing[i])) {
+  if (drawing.length == tmpDrawing.length && drawing.every((v, i) => v === tmpDrawing[i]) || loadedDoodleEdited) {
     notify(USER_MSG.UPLOAD_ERROR, USER_MSG.UPLOAD_ERROR_DUPLICATE);
   } else {
     pushDoodleToFirebase();
   }
-}
+};
 
 const onLoadDoodle = () => {
   loaddialog = document.querySelector('#loaddialog');
-  var closebutton = document.querySelector('#close-dialog'),
+  let closebutton = document.querySelector('#close-dialog'),
     pagebackground = document.querySelector('body');
 
   if (!loaddialog.hasAttribute('open')) {
     // get doodles from db
     fetchDoodles();
-    // show the dialog 
+    // show the dialog
     loaddialog.setAttribute('open', 'open');
     // after displaying the dialog, focus the closebutton inside it
     closebutton.focus();
@@ -127,14 +133,13 @@ const onLoadDoodle = () => {
   } else {
     loaddialog.removeAttribute('open');
   }
-
-}
+};
 
 // clear drawing array -> clear canvas
 const onClearDoodle = () => {
   drawing = [];
   notify(USER_MSG.CANVAS_CLEARED, '');
-}
+};
 
 // download current canvas to local
 const onDownloadDoodle = () => {
@@ -143,16 +148,16 @@ const onDownloadDoodle = () => {
   } else {
     if (doodleKey == '') {
       let currTime = String(new Date(new Date().getTime()).toISOString().split('.')[0]);
-      let fileName = "WebPaint_" + currTime;
-      saveCanvas(fileName, "jpg");
+      let fileName = 'WebPaint_' + currTime;
+      saveCanvas(fileName, 'jpg');
       notify(USER_MSG.DOWNLOAD_SUCCESS, USER_MSG.DOWNLOAD_SUCCESS_SUB + fileName);
     } else {
-      let fileName = "WebPaint_" + String(doodleKey);
-      saveCanvas(fileName, "jpg");
+      let fileName = 'WebPaint_' + String(doodleKey);
+      saveCanvas(fileName, 'jpg');
       notify(USER_MSG.DOWNLOAD_SUCCESS, USER_MSG.DOWNLOAD_SUCCESS_SUB + fileName);
     }
   }
-}
+};
 
 // push current drawing[] to db
 const pushDoodleToFirebase = () => {
@@ -160,17 +165,17 @@ const pushDoodleToFirebase = () => {
 
   // data to be stored in DB
   let data = {
-    doodle: drawing
+    doodle: drawing,
   };
 
   let dbDoodle = dbDrawings.push(data, finished);
-  console.log("Firebase generated key: " + dbDoodle.key);
+  console.log('Firebase generated key: ' + dbDoodle.key);
   doodleKey = dbDoodle.key;
 
   // Reload the data for the page
   function finished(err) {
     if (err) {
-      console.log("ooops, something went wrong.");
+      console.log('ooops, something went wrong.');
       console.log(err);
       notify(USER_MSG.UPLOAD_ERROR, USER_MSG.UPLOAD_ERROR_SUB);
     } else {
@@ -179,11 +184,11 @@ const pushDoodleToFirebase = () => {
       tmpDrawing = drawing;
     }
   }
-}
+};
 
 // Notifications
 const notify = (title, msg) => {
-  if (Notification.permission !== "granted") {
+  if (Notification.permission !== 'granted') {
     Notification.requestPermission();
   } else {
     let notification = new Notification(title, {
@@ -192,24 +197,22 @@ const notify = (title, msg) => {
     });
 
     notification.onclick = function () {
-      window.open("https://webpaint.david-wu.me/");
+      window.open('https://webpaint.david-wu.me/');
     };
-
   }
-
-}
+};
 
 // load doodles from DB into list
 const fetchDoodles = () => {
   console.log('Loading from db');
   getAllDoodles();
   showLoadedDoodles();
-}
+};
 
 // get all doodle IDs and add them to doodlesDict
 const getAllDoodles = () => {
-  let ref = database.ref("drawings");
-  ref.on("value", gotAll, errData);
+  let ref = database.ref('drawings');
+  ref.on('value', gotAll, errData);
   // The data comes back as an object
 
   function gotAll(data) {
@@ -228,29 +231,30 @@ const getAllDoodles = () => {
   }
 
   function errData(error) {
-    console.log("Something went wrong.");
+    console.log('Something went wrong.');
     console.log(error);
   }
-}
+};
 
 const loadOne = (id) => {
-  let ref = database.ref("drawings/" + id);
-  ref.on("value", gotOne, errData);
+  let ref = database.ref('drawings/' + id);
+  ref.on('value', gotOne, errData);
 
   function errData(error) {
-    console.log("Something went wrong.");
+    console.log('Something went wrong.');
     console.log(error);
   }
 
   function gotOne(data) {
     drawing = data.val().doodle;
+    loadedDoodleEdited = false;
   }
-}
+};
 
 const showLoadedDoodles = () => {
   let doodleTable = document.querySelector('table').getElementsByTagName('tbody')[0];
   doodleTable.innerHTML = '';
-  Object.entries(doodlesDict).forEach(doodleEntry => {
+  Object.entries(doodlesDict).forEach((doodleEntry) => {
     let row = doodleTable.insertRow(-1);
     let cell_ID = row.insertCell(0);
     let cell_Key = row.insertCell(1);
@@ -259,7 +263,7 @@ const showLoadedDoodles = () => {
     let createClickHandler =
       function (row) {
         return function () {
-          let IDcell = row.getElementsByTagName("td")[1];
+          let IDcell = row.getElementsByTagName('td')[1];
           let doodleID = IDcell.innerHTML;
           loadOne(doodleID);
           loaddialog.removeAttribute('open');
@@ -267,4 +271,4 @@ const showLoadedDoodles = () => {
       };
     row.onclick = createClickHandler(row);
   });
-}
+};
