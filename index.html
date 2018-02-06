@@ -43,7 +43,13 @@
     $(function () {
       $("#loaddialog").load("_includes/loaddialog.html");
     });
+    $(function () {
+      $("#savedialog").load("_includes/savedialog.html");
+    });
     $('.btn-outline-warning').click(function () {
+      $(this).addClass("slideUp");
+    });
+    $('.btn-outline-success').click(function () {
       $(this).addClass("slideUp");
     });
   </script>
@@ -65,6 +71,8 @@
   </nav>
 
   <dialog id="loaddialog" role="dialog" aria-labelledby="dialog-heading" class="slideDown">
+  </dialog>
+  <dialog id="savedialog" role="dialog" aria-labelledby="dialog-heading" class="slideDown">
   </dialog>
 
   <div id="canvas"></div>
