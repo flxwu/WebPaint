@@ -18,5 +18,9 @@
   "homepage": "https://github.com/Pl4gue/WebPaint#readme",
   "devDependencies": {
     "eslint-config-google": "^0.9.1"
+  },
+  "dependencies": {
+    "eslint": "^4.17.0",
+    "firebase-tools": "^3.17.4"
   }
 }
